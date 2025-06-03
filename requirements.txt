@@ -1,6 +1,6 @@
-streamlit
-supabase
+streamlit==1.43.2
+supabase==2.15.1
 random
 time
 enum
-openai
+openai==1.69.0
