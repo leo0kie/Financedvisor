@@ -1,4 +1,5 @@
 import streamlit as st
+import os
 
 # Get unique session id
 def _get_session():
@@ -14,18 +15,19 @@ def _get_session():
 # write evaluation inputs to txt file
 def handle_submissions(chatbot: str, radio: str, slider1: int, slider2: int, slider3: int, chat_history: list):
     user_id = _get_session()
-    f = open(f"submissions/{user_id}.txt", "a")
-    f.write(f"**{chatbot}** \n\n")
-    f.write(f"Time until conversation end: {st.session_state.chat_duration} seconds \n")
-    f.write(F"Time until evaluation end: {st.session_state.eval_duration} seconds \n")
-    f.write("**Slider Values** \n")
-    f.write("Radio: " + radio + "\n")
-    f.write("Slider 1: " + str(slider1) + "\n")
-    f.write("Slider 2: " + str(slider2) + "\n")
-    f.write("Slider 3: " + str(slider3) + "\n\n")
-    f.write("Chat History \n")
-    for dictionary in chat_history:
-        line = "" + dictionary.get("role") + ": \n" + dictionary.get("content") + ""
-        f.write(line + "\n")
-    f.write("\n\n")
-    f.close() 
+    filename = f"submission_{user_id}.txt"
+    filepath = os.path.join("submissions", filename)
+    with open(filepath, "w") as f:
+        f.write(f"**{chatbot}** \n\n")
+        f.write(f"Time until conversation end: {st.session_state.chat_duration} seconds \n")
+        f.write(F"Time until evaluation end: {st.session_state.eval_duration} seconds \n")
+        f.write("**Slider Values** \n")
+        f.write("Radio: " + radio + "\n")
+        f.write("Slider 1: " + str(slider1) + "\n")
+        f.write("Slider 2: " + str(slider2) + "\n")
+        f.write("Slider 3: " + str(slider3) + "\n\n")
+        f.write("Chat History \n")
+        for dictionary in chat_history:
+            line = "" + dictionary.get("role") + ": \n" + dictionary.get("content") + ""
+            f.write(line + "\n")
+        f.write("\n\n") 
