@@ -14,7 +14,7 @@ def _get_session():
 # write evaluation inputs to txt file
 def handle_submissions(chatbot: str, radio: str, slider1: int, slider2: int, slider3: int, chat_history: list):
     user_id = _get_session()
-    f = open(f".data/{user_id}.txt", "a")
+    f = open(f"submissions/{user_id}.txt", "a")
     f.write(f"**{chatbot}** \n\n")
     f.write(f"Time until conversation end: {st.session_state.chat_duration} seconds \n")
     f.write(F"Time until evaluation end: {st.session_state.eval_duration} seconds \n")
