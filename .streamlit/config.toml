@@ -8,3 +8,4 @@ headingFont = "monospace"
 
 [theme.sidebar]
 font = "monospace"
+secondaryBackgroundColor = "#00C49A"
