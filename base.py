@@ -1,5 +1,6 @@
 import streamlit as st
 import os
+from app import intitializeClient
 
 # Get unique session id
 def _get_session():
@@ -13,7 +14,7 @@ def _get_session():
     return session_info.session.id
 
 # write evaluation inputs to txt file
-def handle_submissions(chatbot: str, radio: str, slider1: int, slider2: int, slider3: int, chat_history: list):
+def handle_submissions_old(chatbot: str, radio: str, slider1: int, slider2: int, slider3: int, chat_history: list):
     user_id = _get_session()
     filename = f"submission_{user_id}.txt"
     filepath = os.path.join("submissions", filename)
@@ -30,4 +31,22 @@ def handle_submissions(chatbot: str, radio: str, slider1: int, slider2: int, sli
         for dictionary in chat_history:
             line = "" + dictionary.get("role") + ": \n" + dictionary.get("content") + ""
             f.write(line + "\n")
-        f.write("\n\n") 
+        f.write("\n\n")
+
+def handle_submissions(chatbot: str, radio: str, slider1: int, slider2: int, slider3: int, chat_history: list):
+    user_id = _get_session()
+    submission = {
+        "user_id": user_id,
+        "chatbot_used": chatbot,
+        "duration_until_conversation_end": st.session_state.chat_duration,
+        "duration_until_evaluation_end": st.session_state.eval_duration,
+        "follows_advice": radio,
+        "confidence_value": slider1,
+        "correctness_value": slider2,
+        "experience_level": slider3,
+        "chat_history": chat_history
+    }
+
+    client = intitializeClient()
+    response = client.table("evaluation_submissions").insert(submission).execute()
+    print(response)
