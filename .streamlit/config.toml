@@ -5,7 +5,6 @@ backgroundColor = "#121212"
 secondaryBackgroundColor = "#1E1E1E"
 textColor = "#F1F1F1"
 headingFont = "monospace"
-
 [theme.sidebar]
 font = "monospace"
-secondaryBackgroundColor = "#00C49A"
+backgroundColor = "#00C49A"
