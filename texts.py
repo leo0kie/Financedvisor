@@ -41,4 +41,4 @@ third_person_hedging = """You are only allowed to answer questions that are dire
 - Phrase your answer not using a first-person view.
 - You are allowed to hedge by using following utterances: “Arguably”, “Likely”, “It sounds like”, “It looks like”, “Probably”, “Should”, “Possibly”, “Might”, “It seems like”, “It feels like”, “May”, “Could”"""
 
-chat_warning = "You need to select a scenario before interacting with the me!"
+chat_warning = "You need to activate me in the **Introduction** section first!"
