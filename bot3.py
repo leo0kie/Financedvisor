@@ -69,7 +69,7 @@ if tab == "Chatting":
         chat_bot3.chat_history.append({"role": "assistant", "content": response})
 
     if len(st.session_state.chatbot3_messages) > 0:
-        end_button = st.button("End conversation", on_click=end_button_clicked)
+        end_button = st.button("End conversation", on_click=end_button_clicked, disabled=st.session_state.chat3_disable)
 
 else:
     eval_form = st.form("chat3")
