@@ -1,4 +1,5 @@
 import streamlit as st
+import time
 import chat
 import base
 import texts as tx
@@ -41,10 +42,14 @@ chat_bot2 = chat.Chat(st.secrets["OPENAI_API_KEY"], st.secrets["BASE_URL"], st.s
 #check_page_change()
 def end_button_clicked():
     st.session_state.chat2_disable = True
+    if st.session_state.chat_duration is None:
+        st.session_state.chat_duration = round(time.time() - st.session_state.start_time)
     st.session_state.current_tab = "Evaluation"
 
 def eval_button_clicked():
     st.session_state.evaluation_finished = True
+    if st.session_state.eval_duration is None:
+        st.session_state.eval_duration = round(time.time() - st.session_state.start_time)
 
 if tab == "Chatting":
     for message in st.session_state.chatbot2_messages:
