@@ -35,7 +35,9 @@ elif st.session_state.chat1_disable == True and st.session_state.selected_scenar
         label_visibility="collapsed"
     )
 
-chat_bot1 = chat.Chat(st.secrets["OPENAI_API_KEY"], st.secrets["BASE_URL"], st.secrets["MODEL_NAME"], st.session_state.chatbot1_messages, "no_hedging")
+def get_chat():
+    chat_bot1 = chat.Chat(st.secrets["OPENAI_API_KEY"], st.secrets["BASE_URL"], st.secrets["MODEL_NAME"], st.session_state.chatbot1_messages, "no_hedging")
+    return chat_bot1
 
 #def check_page_change():
 #    chat_bot1.check_page_change(app.bot1_page.url_path)
@@ -46,12 +48,16 @@ def end_button_clicked():
         st.session_state.chat_duration = round(time.time() - st.session_state.start_time)
     st.session_state.current_tab = "Evaluation"
 
+def delete_history_button_clicked():
+    st.session_state.chatbot2_messages = []
+
 def eval_button_clicked():
     st.session_state.evaluation_finished = True
     if st.session_state.eval_duration is None:
         st.session_state.eval_duration = round(time.time() - st.session_state.start_time)
 
 if tab == "Chatting":
+    bot = get_chat()
     st.session_state.current_tab = "Chatting"
     for message in st.session_state.chatbot1_messages:
         with st.chat_message(message["role"]):
@@ -62,15 +68,19 @@ if tab == "Chatting":
     if user_query:
         with st.chat_message("user"):
             st.markdown(user_query)
-        chat_bot1.chat_history.append({"role": "user", "content": user_query})
-        stream = chat_bot1.generateStream(chat_bot1.chat_history)
+        bot.chat_history.append({"role": "user", "content": user_query})
+        stream = bot.generateStream(bot.chat_history)
 
         with st.chat_message("assistant"):
             response = st.write_stream(stream)
-        chat_bot1.chat_history.append({"role": "assistant", "content": response})
+        bot.chat_history.append({"role": "assistant", "content": response})
 
     if len(st.session_state.chatbot1_messages) > 0:
-        end_button = st.button("End conversation", on_click=end_button_clicked, disabled=st.session_state.chat1_disable)
+        col1, col2 = st.columns([0.25, 0.75])
+        with col1:
+            end_button = st.button("End conversation", on_click=end_button_clicked, disabled=st.session_state.chat1_disable)
+        with col2:
+            delete_history_button = st.button(":small[Delete conversation history]", on_click=delete_history_button_clicked, disabled=st.session_state.chat1_disable)
 
 else:
     eval_form = st.form("chat1")
@@ -90,7 +100,7 @@ else:
         submitted = st.form_submit_button("Submit", on_click=eval_button_clicked, disabled=st.session_state.evaluation_finished)
 
     if submitted:
-        base.handle_submissions("ChatBot 1", radio, slider1, slider2, slider3, chat_bot1.chat_history)
+        base.handle_submissions("ChatBot 1", radio, slider1, slider2, slider3, st.session_state.chatbot1_messages)
         st.success("Evaluation has sucessfully been committed. Thank you for your attendance!", icon="✅")
         st.balloons()
         st.info("You can close this window now.", icon="👋")
