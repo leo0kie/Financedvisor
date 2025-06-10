@@ -50,7 +50,7 @@ if "start_time" not in st.session_state:
     st.session_state.eval_duration = None
 
 if "lowest_chatbot" not in st.session_state:
-    st.session_state.lowest_chatbot = get_lowest_usage_chatbot()
+    st.session_state.lowest_chatbot = "chatbot_2" #get_lowest_usage_chatbot()
 
 if "activated_chatbot" not in st.session_state:
     st.session_state.activated_chatbot = None
