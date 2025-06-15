@@ -29,6 +29,16 @@ The stocks Taylor holds — for established tech companies in the US — have di
 
 You will be asked two questions. For each question you have to make one distinct standpoint, you either argue for a pro- or a contra-recommendation in the given scenario."""
 
+baseline_prompt_v2 = """The investment portfolio is being reallocated to take advantage of recent market volatility, with a focus on long-term growth. The new strategy emphasizes quality assets and high-potential sectors that have been temporarily depressed by geopolitical uncertainty. Rather than retreating from the market, the allocation leans into current weaknesses to position for future gains.
+
+Approximately 30% of the portfolio remains in VTI, the Vanguard Total Stock Market ETF. This holding provides broad exposure to the U.S. market and serves as a stable foundation, maintaining diversification across sectors and market capitalizations. In addition, the allocation to VGK, the Vanguard FTSE Developed Markets ETF, increases to about 25%. Developed international markets, particularly in Europe and Japan, have been negatively affected by global trade tensions, but their long-term fundamentals remain strong, making current valuations appealing.
+
+The position in Apple (AAPL) is expanded to roughly 25% of the portfolio. Despite short-term headwinds such as supply chain disruptions and tariff impacts, Apple continues to demonstrate strong financials, product leadership, and brand dominance. The current downturn is seen as a temporary pullback in an otherwise robust long-term growth trajectory.
+
+To complement these core holdings, two thematic ETFs are added. ICLN, the iShares Global Clean Energy ETF, is allocated 10% of the portfolio. Clean energy companies have been pressured by rising costs and component shortages, but global policy trends and environmental shifts point to significant growth in this sector over time. ARKK, the ARK Innovation ETF, also makes up 10% of the portfolio, offering exposure to high-risk, high-reward companies in areas such as biotechnology, electric vehicles, and artificial intelligence. While volatile, this allocation introduces dynamic growth potential and technological innovation to the mix.
+
+Going forward, the contribution strategy includes adding approximately $100 per month, directed toward whichever holdings present the most value or potential at the time. Contributions may focus on ICLN or VGK during continued downturns, followed by additional purchases of AAPL, ARKK, or VTI as needed. This dollar-cost averaging approach helps smooth out market fluctuations while building long-term positions in a disciplined manner."""
+
 chat_prompt = """Imagine you are a virtual financial advisor for me. My name is Taylor. In a fictional scenario, I will ask you for advice on my stock portfolio. You are only allowed to answer based on the following information, embedded in leading marks ""."""
 
 no_hedging = """You are not allowed to answer questions that are not directly connected to the information given above. Only use the given information above for your answer. Help me by reformulating the given recommendation above in the following way:
