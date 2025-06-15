@@ -21,6 +21,8 @@ scenario_one = "Should I sell my tech stocks right now if they have been consist
 
 scenario_two = "The European companies in my ETF seem less impacted by U.S. protectionist policies - should I increase my investment in them?"
 
+eval_reminder = """:small[When you're finished, just click the **End Conversation** button above the chat input.]"""
+
 baseline_prompt = """You are given the following scenario: "Taylor, a 23-year-old student at the University of Michigan has over the past year started investing gradually — a mix of broad-market ETFs (like VTI, IYJ and VGK) and a few individual tech stocks (AAPL). The current portfolio totals around $4,000.
 Recently, the market's gotten choppier. Political developments in the US have caused worldwide dips even in stocks from the most valuable companies. Tariffs on imports from multiple countries around the world, especially on electronics, manufacturing inputs, and renewable tech components, have led to uncertain market conditions in those sectors. 
 The stocks Taylor holds — for established tech companies in the US — have dipped already. Taylor is hearing more about supply chain disruptions, trade retaliation, and investor uncertainty, and it's starting to show in the portfolio. Taylor wants to be proactive, but he also doesn’t want to overreact."

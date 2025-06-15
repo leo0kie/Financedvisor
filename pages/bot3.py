@@ -4,7 +4,7 @@ import chat
 import base
 import texts as tx
 
-st.title('Financedvisor 1')
+st.title('Financedvisor 3')
 
 st.header('Chat with me!', divider=True)
 
@@ -13,10 +13,11 @@ if st.session_state["selected_scenario"] == False:
 else:
     st.write(f"""Your concerns:   
         :point_right: {tx.scenario_one}  
-        :point_right: {tx.scenario_two}
+        :point_right: {tx.scenario_two}  
+        :information_source: {tx.eval_reminder}
         """)
 
-if st.session_state.chat1_disable == False or st.session_state.selected_scenario == False:
+if st.session_state.chat3_disable == False or st.session_state.selected_scenario == False:
     tab = st.segmented_control(
         "Tab options",
         ["Chatting"],
@@ -26,7 +27,7 @@ if st.session_state.chat1_disable == False or st.session_state.selected_scenario
         label_visibility="collapsed"
         )
 
-elif st.session_state.chat1_disable == True and st.session_state.selected_scenario == True:
+elif st.session_state.chat3_disable == True and st.session_state.selected_scenario == True:
     tab = st.segmented_control(
         "Tab options",
         ["Chatting", "Evaluation"],
@@ -35,13 +36,13 @@ elif st.session_state.chat1_disable == True and st.session_state.selected_scenar
         label_visibility="collapsed"
     )
 
-chat_bot1 = chat.Chat(st.secrets["OPENAI_API_KEY"], st.secrets["BASE_URL"], st.secrets["MODEL_NAME"], st.session_state.chatbot1_messages, "no_hedging")
+chat_bot3 = chat.Chat(st.secrets["OPENAI_API_KEY"], st.secrets["BASE_URL"], st.secrets["MODEL_NAME"], st.session_state.chatbot3_messages, "third_person_hedging")
 
 #def check_page_change():
-#    chat_bot1.check_page_change(app.bot1_page.url_path)
+#    chat_bot3.check_page_change(app.bot3_page.url_path)
 #check_page_change()
 def end_button_clicked():
-    st.session_state.chat1_disable = True
+    st.session_state.chat3_disable = True
     if st.session_state.chat_duration is None:
         st.session_state.chat_duration = round(time.time() - st.session_state.start_time)
     st.session_state.current_tab = "Evaluation"
@@ -52,28 +53,27 @@ def eval_button_clicked():
         st.session_state.eval_duration = round(time.time() - st.session_state.start_time)
 
 if tab == "Chatting":
-    st.session_state.current_tab = "Chatting"
-    for message in st.session_state.chatbot1_messages:
+    for message in st.session_state.chatbot3_messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
     # Check for user input and streams conversation
-    user_query = st.chat_input("How can I help you?", disabled=st.session_state.chat1_disable)
+    user_query = st.chat_input("How can I help you?", disabled=st.session_state.chat3_disable)
     if user_query:
         with st.chat_message("user"):
             st.markdown(user_query)
-        chat_bot1.chat_history.append({"role": "user", "content": user_query})
-        stream = chat_bot1.generateStream(chat_bot1.chat_history)
+        chat_bot3.chat_history.append({"role": "user", "content": user_query})
+        stream = chat_bot3.generateStream(chat_bot3.chat_history)
 
         with st.chat_message("assistant"):
             response = st.write_stream(stream)
-        chat_bot1.chat_history.append({"role": "assistant", "content": response})
+        chat_bot3.chat_history.append({"role": "assistant", "content": response})
 
-    if len(st.session_state.chatbot1_messages) > 0:
-        end_button = st.button("End conversation", on_click=end_button_clicked, disabled=st.session_state.chat1_disable)
+    if len(st.session_state.chatbot3_messages) > 0:
+        end_button = st.button("End conversation", on_click=end_button_clicked, disabled=st.session_state.chat3_disable)
 
 else:
-    eval_form = st.form("chat1")
+    eval_form = st.form("chat3")
     with eval_form:
         st.markdown(":one: **Will you, as Taylor, follow the chatbot's given recommendation?**")
         radio = st.radio('Make a decision', options=["Yes", "No"])
@@ -90,7 +90,7 @@ else:
         submitted = st.form_submit_button("Submit", on_click=eval_button_clicked, disabled=st.session_state.evaluation_finished)
 
     if submitted:
-        base.handle_submissions("ChatBot 1", radio, slider1, slider2, slider3, chat_bot1.chat_history)
+        base.handle_submissions("ChatBot 3", radio, slider1, slider2, slider3, chat_bot3.chat_history)
         st.success("Evaluation has sucessfully been committed. Thank you for your attendance!", icon="✅")
         st.balloons()
         st.info("You can close this window now.", icon="👋")

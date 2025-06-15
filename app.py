@@ -96,11 +96,11 @@ if "evaluation_finished" not in st.session_state:
 
 # Initialize the pages
 st.logo(image="logo.png", size="large")
-about_page = st.Page("about.py", title="About this App")
-bot1_page = st.Page("bot1.py", title="Chatbot")
-bot2_page = st.Page('bot2.py', title='Chatbot')
-bot3_page = st.Page('bot3.py', title='Chatbot')
-help_page = st.Page('help.py', title='Help')
+about_page = st.Page("pages/about.py", title="About this App")
+bot1_page = st.Page("pages/bot1.py", title="Chatbot")
+bot2_page = st.Page('pages/bot2.py', title='Chatbot')
+bot3_page = st.Page('pages/bot3.py', title='Chatbot')
+help_page = st.Page('pages/help.py', title='Help')
 
 if st.session_state["lowest_chatbot"] != None:
     if st.session_state["lowest_chatbot"] == "chatbot_1":
@@ -115,7 +115,7 @@ else:
 pg = st.navigation(
     {
         "Introduction": [about_page],
-        "Testing": [st.session_state["activated_chatbot"]],
+        "Testing": [st.session_state.activated_chatbot],
         "Help": [help_page],
     }
 )
