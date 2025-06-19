@@ -53,7 +53,7 @@ class Chat:
         client = self.buildClient()
         stream = client.chat.completions.create(
             messages=[
-                {"role": "system", "content": f"{tx.chat_prompt} {st.session_state.baseline}. {self.hedging_variant}"},]
+                {"role": "system", "content": f"{tx.chat_prompt} '{tx.baseline_prompt_v2}'. {self.hedging_variant}"},]
             + [
                 {"role": current["role"], "content": current["content"]}
                 for current in chat_history],

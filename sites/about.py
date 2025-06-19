@@ -5,11 +5,11 @@ import texts as tx
 
 def select_scenario():
     st.session_state["selected_scenario"] = True
-    initiate = chat.Chat(st.secrets["OPENAI_API_KEY"], st.secrets["BASE_URL"], st.secrets["MODEL_NAME"])
-    baseline = initiate.create_baseline_answer()
-    answer = baseline.choices[0].message.content
-    st.session_state["baseline"] = answer
-    print(answer)
+    #initiate = chat.Chat(st.secrets["OPENAI_API_KEY"], st.secrets["BASE_URL"], st.secrets["MODEL_NAME"])
+    #baseline = initiate.create_baseline_answer()
+    #answer = baseline.choices[0].message.content
+    #st.session_state["baseline"] = answer
+    #print(answer)
     st.session_state.chat1_disable = False
     st.session_state.chat2_disable = False
     st.session_state.chat3_disable = False
@@ -37,13 +37,13 @@ if st.session_state["scenario_visible"] == True:
             c, d = st.columns(2)
             e, f = st.columns(2)
             st.markdown("_Time stamp_: 2025-04-30")
-            a.metric("U.S. Broad Market ETF", "278,80$", "-3.8%", border=True)
-            b.metric("U.S. Domestic Manufacturing ETF", "131,92$", "-1.20%", border=True)
+            a.metric("U.S. Broad Market ETF", "602,80$", "-3.8%", border=True)
+            b.metric("U.S. Domestic Manufacturing ETF", "298,92$", "-1.20%", border=True)
             
-            c.metric("Defensive Dividend Stock", "160,52$", "-4.25%", border=True)
-            d.metric("Tech Stock", "205,35$", "-18.00%", border=True)
+            c.metric("Defensive Dividend Stock", "226,52$", "-4.25%", border=True)
+            d.metric("Tech Stock", "225,35$", "-18.00%", border=True)
             
-            e.metric("European Equity ETF", "74,18$", "+16.87%", border=True)
+            e.metric("European Equity ETF", "151,18$", "+16.87%", border=True)
 
             st.markdown("\n\n")
             st.markdown(f"**Please notice**: :small[{tx.advisor}]")
@@ -69,6 +69,6 @@ if st.session_state["scenario_visible"] == True:
         if st.button(label="Start the virtual financial assistant..", key=tx.scenario_two):
             with st.spinner("Loading information...", show_time=True):
                 select_scenario()
-            st.success("_Financedvisor_ is now ready!\n\n:small[Under the **Testing** section in the sidebar on the left of the page click on **Chatbot**.", icon="✅")
-            st.page_link(f"pages/{st.session_state.activated_chatbot.url_path}.py", label="Or just click here!")
+            st.success("_Financedvisor_ is now ready!\n\n:small[Under the **Testing** section in the sidebar on the left of the page click on **Chatbot**.]", icon="✅")
+            st.page_link(f"sites/{st.session_state.activated_chatbot.url_path}.py", label="Or just click here!")
             
