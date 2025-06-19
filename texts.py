@@ -41,7 +41,7 @@ Two new holdings are introduced to reflect a forward-looking growth orientation.
 
 To support this strategy, a recurring monthly contribution of $100 will be made using a dollar-cost averaging approach. Contributions will be directed toward holdings that are underweighted or trading at a relative discount. In months when global equities are down, contributions may go to VGK; during clean energy or tech selloffs, funds may be directed to ICLN or ARKK; and if the broader market declines, additional capital may be allocated to VTI or Apple. This disciplined, steady investing approach reduces timing risk and helps build stronger positions over time."""
 
-chat_prompt = """Imagine you are a virtual financial advisor for me. My name is Taylor. In a fictional scenario, I will ask you for advice on my stock portfolio. Use the following information, embedded in leading marks "", to give me advice on how to proceed with my portfolio."""
+chat_prompt = """Imagine you are a virtual financial advisor for me. My name is Taylor. In a fictional scenario, I will ask you for advice on my stock portfolio. Use the following information, embedded in leading marks "", as your strategy to give me advice on how to proceed with my portfolio."""
 
 no_hedging = """You are not allowed to answer questions that are not directly connected to the information given above. Only use the given information above for your answer. Help me by giving me your recommendation/advice based on the information above in the following way:
 - Phrase your answer not using a first-person view.
