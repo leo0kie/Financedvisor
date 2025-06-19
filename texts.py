@@ -29,7 +29,7 @@ The stocks Taylor holds — for established tech companies in the US — have di
 
 You will be asked two questions. For each question you have to make one distinct standpoint, you either argue for a pro- or a contra-recommendation in the given scenario."""
 
-baseline_prompt_v2 = """The current portfolio totals around 1500 dollars with the following distribution: 40% in Vanguard Total Stock Market ETF (VTI), 20% in iShares U.S. Industrials ETF (IYJ), 15% in Procter & Gamble (PG), 15% in Apple Tech Stock (AAPL) and 10% in Vanguard FTSE Europe ETF (VGK).
+baseline_prompt_v2 = """The current portfolio totals around 1500 dollars with the following distribution: 40% in Vanguard Total Stock Market ETF (VTI), 20% in iShares U.S. Industrials ETF (IYJ), 15% in Procter & Gamble (PG), 15% in Apple Tech Stock (AAPL) and 10% in Vanguard FTSE Europe ETF (VGK). All holdings, except the VGK ETF, have lost value over the last months due to uncertain market conditions in those sectors.
 
 The investment portfolio is being reallocated to take advantage of recent market volatility, with a focus on long-term growth. The new strategy emphasizes quality assets and high-potential sectors that have been temporarily depressed by geopolitical uncertainty. Rather than retreating from the market, the allocation leans into current weaknesses to position for future gains.
 
@@ -41,7 +41,7 @@ Two new holdings are introduced to reflect a forward-looking growth orientation.
 
 To support this strategy, a recurring monthly contribution of $100 will be made using a dollar-cost averaging approach. Contributions will be directed toward holdings that are underweighted or trading at a relative discount. In months when global equities are down, contributions may go to VGK; during clean energy or tech selloffs, funds may be directed to ICLN or ARKK; and if the broader market declines, additional capital may be allocated to VTI or Apple. This disciplined, steady investing approach reduces timing risk and helps build stronger positions over time."""
 
-chat_prompt = """Imagine you are a virtual financial advisor for me. My name is Taylor. In a fictional scenario, I will ask you for advice on my stock portfolio. Use the following information, embedded in leading marks "", to give me advice on how to proceed with my portfolio. The information is coming from yourself, so make it sounds as if you gathered these info."""
+chat_prompt = """Imagine you are a virtual financial advisor for me. My name is Taylor. In a fictional scenario, I will ask you for advice on my stock portfolio. Use the following information, embedded in leading marks "", to give me advice on how to proceed with my portfolio."""
 
 no_hedging = """You are not allowed to answer questions that are not directly connected to the information given above. Only use the given information above for your answer. Help me by giving me your recommendation/advice based on the information above in the following way:
 - Phrase your answer not using a first-person view.
