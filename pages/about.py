@@ -70,5 +70,5 @@ if st.session_state["scenario_visible"] == True:
             with st.spinner("Loading information...", show_time=True):
                 select_scenario()
             st.success("_Financedvisor_ is now ready!\n\n:small[Under the **Testing** section in the sidebar on the left of the page click on **Chatbot**.]", icon="✅")
-            st.page_link(f"sites/{st.session_state.activated_chatbot.url_path}.py", label="Or just click here!")
+            st.page_link(f"pages/{st.session_state.activated_chatbot.url_path}.py", label="Or just click here!")
             

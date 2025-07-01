@@ -50,7 +50,7 @@ if "start_time" not in st.session_state:
     st.session_state.eval_duration = None
 
 if "lowest_chatbot" not in st.session_state:
-    st.session_state.lowest_chatbot = get_lowest_usage_chatbot()
+    st.session_state.lowest_chatbot = "chatbot_3"#get_lowest_usage_chatbot()
 
 if "activated_chatbot" not in st.session_state:
     st.session_state.activated_chatbot = None
@@ -96,11 +96,11 @@ if "evaluation_finished" not in st.session_state:
 
 # Initialize the pages
 st.logo(image="logo.png", size="large")
-about_page = st.Page("sites/about.py", title="About this App")
-bot1_page = st.Page("sites/bot1.py", title="Chatbot")
-bot2_page = st.Page('sites/bot2.py', title='Chatbot')
-bot3_page = st.Page('sites/bot3.py', title='Chatbot')
-help_page = st.Page('sites/help.py', title='Help')
+about_page = st.Page("pages/about.py", title="About this App")
+bot1_page = st.Page("pages/bot1.py", title="Chatbot")
+bot2_page = st.Page('pages/bot2.py', title='Chatbot')
+bot3_page = st.Page('pages/bot3.py', title='Chatbot')
+help_page = st.Page('pages/help.py', title='Help')
 
 if st.session_state["lowest_chatbot"] != None:
     if st.session_state["lowest_chatbot"] == "chatbot_1":
