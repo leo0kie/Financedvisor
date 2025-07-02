@@ -1,5 +1,4 @@
 import streamlit as st
-import chat
 import texts as tx
 
 
@@ -69,6 +68,6 @@ if st.session_state["scenario_visible"] == True:
         if st.button(label="Start the virtual financial assistant..", key=tx.scenario_two):
             with st.spinner("Loading information...", show_time=True):
                 select_scenario()
-            st.success("_Financedvisor_ is now ready!\n\n:small[Under the **Testing** section in the sidebar on the left of the page click on **Chatbot**.]", icon="✅")
-            st.page_link(f"pages/{st.session_state.activated_chatbot.url_path}.py", label="Or just click here!")
+            st.success("_Financedvisor_ is now ready!\n\n:small[Under the **Testing** section in the expandable sidebar on the left of the page click on **Chatbot**.]", icon="✅")
+            st.page_link(f"sites/{st.session_state.activated_chatbot.url_path}.py", label="Or just click here!")
             

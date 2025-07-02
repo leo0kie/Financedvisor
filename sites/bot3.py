@@ -1,7 +1,7 @@
 import streamlit as st
 import time
 import chat
-import base
+#import base
 import texts as tx
 
 st.title('Financedvisor 3')
@@ -90,7 +90,7 @@ else:
         submitted = st.form_submit_button("Submit", on_click=eval_button_clicked, disabled=st.session_state.evaluation_finished)
 
     if submitted:
-        base.handle_submissions("ChatBot 3", radio, slider1, slider2, slider3, chat_bot3.chat_history)
+        #base.handle_submissions("ChatBot 3", radio, slider1, slider2, slider3, chat_bot3.chat_history)
         st.success("Evaluation has sucessfully been committed. Thank you for your attendance!", icon="✅")
         st.balloons()
         st.info("You can close this window now.", icon="👋")

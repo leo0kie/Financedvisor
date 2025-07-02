@@ -1,6 +1,7 @@
 import streamlit as st
 import os
-from app import intitializeClient
+from supabase import create_client, Client
+import random
 
 # Get unique session id
 def _get_session():
@@ -32,6 +33,46 @@ def handle_submissions_old(chatbot: str, radio: str, slider1: int, slider2: int,
             line = "" + dictionary.get("role") + ": \n" + dictionary.get("content") + ""
             f.write(line + "\n")
         f.write("\n\n")
+
+# Initialize Supabase client using Streamlit Secrets for security
+@st.cache_resource
+def intitializeClient():
+    SUPABASE_URL = st.secrets["SUPABASE_URL"]
+    SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
+    supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+    return supabase
+
+# Updates the usage counts of the chatbots and selects lowest
+@st.cache_data
+def get_lowest_usage_chatbot():
+    client = intitializeClient()
+    response = client.table("chatbot_usage").select("chatbot_name, usage_count").execute()
+
+    if response.data:
+        usage_counts = {item["chatbot_name"]: item["usage_count"] for item in response.data}
+        if not usage_counts:
+            return None
+
+        min_usage = min(usage_counts.values())
+        lowest_usage_chatbots = [name for name, count in usage_counts.items() if count == min_usage]
+        selected_bot = random.choice(lowest_usage_chatbots)
+
+        usage_count = next((bot['usage_count'] for bot in response.data if bot['chatbot_name'] == selected_bot), None)
+        new_count = usage_count + 1
+        client.table("chatbot_usage").update({"usage_count": new_count}).eq("chatbot_name", selected_bot).execute()
+        return selected_bot
+    else:
+        return None
+
+#Increments the usage count for a specific chatbot
+def increment_usage(chatbot_name):
+    client = intitializeClient()
+    response = client.table("chatbot_usage").update({"usage_count": client.raw("usage_count + 1")}).eq("chatbot_name", chatbot_name).execute()
+    if response.data:
+        st.success(f"{chatbot_name} usage incremented!")
+    else:
+        st.error(f"Error incrementing usage for {chatbot_name}")
 
 def handle_submissions(chatbot: str, radio: str, slider1: int, slider2: int, slider3: int, chat_history: list):
     user_id = _get_session()
