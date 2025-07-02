@@ -14,7 +14,6 @@ else:
     st.write(f"""Your concerns:   
         :point_right: {tx.scenario_one}  
         :point_right: {tx.scenario_two}  
-        :information_source: {tx.eval_reminder}
         """)
 
 if st.session_state.chat2_disable == False or st.session_state.selected_scenario == False:
@@ -53,6 +52,7 @@ def eval_button_clicked():
         st.session_state.eval_duration = round(time.time() - st.session_state.start_time)
 
 if tab == "Chatting":
+    st.session_state.current_tab = "Chatting"
     for message in st.session_state.chatbot2_messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
@@ -71,6 +71,12 @@ if tab == "Chatting":
 
     if len(st.session_state.chatbot2_messages) > 0:
         end_button = st.button("End conversation", on_click=end_button_clicked, disabled = st.session_state.chat2_disable)
+        if st.session_state.evaluation_reminder == False:
+            time.sleep(3)
+            st.toast("When you're finished, don\'t forget to click the 'End Conversation' button which has now appeared!", icon=":material/star:")
+            time.sleep(4)
+            st.toast("This will lead you to the evaluation page where you can rate the chatbot!", icon=":material/star:")
+            st.session_state.evaluation_reminder = True
 
 else:
     eval_form = st.form("chat2")

@@ -1,6 +1,6 @@
 import streamlit as st
 import texts as tx
-
+import time
 
 def select_scenario():
     st.session_state["selected_scenario"] = True
@@ -20,6 +20,8 @@ with st.container(border=False):
     st.header('Are you hedging?', divider=True)
 
     st.markdown(f":small[{tx.about_info}]")
+    st.markdown(f":small[{tx.about_note}]")
+    st.info(":small[Please be advised to not use this platform for real investment decisions. This is a simulation for research purposes only.]", icon=":material/report:")
     if st.session_state["scenario_visible"] == False:
         if st.button(label="Jump to the scenario!", key="act"):
 
@@ -31,7 +33,7 @@ if st.session_state["scenario_visible"] == True:
 
         st.markdown(f":small[{tx.introduction_one}]")
 
-        with st.expander("Taylor's Portfolio", icon="🧾"):
+        with st.expander("Your Portfolio", icon="🧾"):
             a, b = st.columns(2)
             c, d = st.columns(2)
             e, f = st.columns(2)
@@ -67,6 +69,7 @@ if st.session_state["scenario_visible"] == True:
 
         if st.button(label="Start the virtual financial assistant..", key=tx.scenario_two):
             with st.spinner("Loading information...", show_time=True):
+                time.sleep(5)
                 select_scenario()
             st.success("_Financedvisor_ is now ready!\n\n:small[Under the **Testing** section in the expandable sidebar on the left of the page click on **Chatbot**.]", icon="✅")
             st.page_link(f"sites/{st.session_state.activated_chatbot.url_path}.py", label="Or just click here!")

@@ -47,8 +47,8 @@ if "chat3_disable" not in st.session_state:
 if "selected_scenario" not in st.session_state:
     st.session_state.selected_scenario = False
 
-if "baseline" not in st.session_state:
-    st.session_state.baseline = None
+if "evaluation_reminder" not in st.session_state:
+    st.session_state.evaluation_reminder = False
 
 if "evaluation_finished" not in st.session_state:
     st.session_state.evaluation_finished = False

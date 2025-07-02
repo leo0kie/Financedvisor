@@ -1,9 +1,11 @@
 about_info = """On this platform you are invited to interact with a chatbot.
-    However, not just about any topic but about finance - specifically the current stock market and investment developments. As for most of us, it has become
-    quite normal to not only save money on our bank accounts but also use (some of) it for investment purposes, the recent global market developments have been a shock to each of us, either already having a stock portfolio or thinking about building one.
-    The distinct uncertainty currently raises a lot of questions, also to _Taylor_.   
-    In the following you will be introduced to a small case example about a student seeking advice for his investment plans from an AI. As _Taylor_, it is your task to get information from the chatbot on how to proceed with your portfolio.
-    After interacting with the chatbot you'll need to complete a short evaluation."""
+    However, not just about any topic but about finance - specifically the stock market and investment developments. As for most of us, it has become
+    quite normal to not only save money on our bank accounts but also use (some of) it for investment purposes, the global market developments caused by the recent tariff war have been a shock to each of us, either already having a stock portfolio or thinking about building one.
+    The distinct uncertainty made many people doubt, just like _Taylor_.   
+    In the following you will be introduced to a small case example about a student seeking advice for his investment plans from an AI during uncertain global market conditions. As _Taylor_, it is your task to get information from the chatbot on how to proceed with your portfolio.
+    After interacting with the chatbot you'll need to complete a short evaluation that takes no more than 3 minutes.  
+    """
+about_note = """It is recommended to not refresh the web page as this will discard chat & evaluation progresses."""
 
 introduction_one = """You're Taylor, a 23-year-old student at the University of Michigan. Over the past year, you've started investing gradually — a mix of broad-market ETFs and a few individual tech stocks. Your current portfolio totals around $1,500.
                 Recently, the market's gotten choppier. Political developments in the US have caused worldwide dips even in stocks from the most valuable companies. Tariffs on imports from multiple countries around the world, especially on electronics, manufacturing inputs, and renewable tech components, have led to uncertain market conditions in those sectors.
