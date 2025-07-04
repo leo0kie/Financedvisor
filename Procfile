@@ -1,1 +1,1 @@
-web: streamlit run --server.port 5000 --server.address 0.0.0.0 --browser.serverAddress financedvisor.apps.informatik.uni-bremen.de --server.runOnSave=false --server.allowRunOnSave=false --server.fileWatcherType=none --browser.gatherUsageStats=false --global.developmentMode=false app.py
+web: ./entrypoint.sh
