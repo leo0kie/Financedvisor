@@ -38,13 +38,13 @@ if st.session_state["scenario_visible"] == True:
             c, d = st.columns(2)
             e, f = st.columns(2)
             st.markdown("_Time stamp_: 2025-04-30")
-            a.metric("U.S. Broad Market ETF", "602,80$", "-3.8%", border=True)
-            b.metric("U.S. Domestic Manufacturing ETF", "298,92$", "-1.20%", border=True)
+            a.metric("U.S. Broad Market ETF (VTI)", "602,80$", "-3.8%", border=True)
+            b.metric("U.S. Domestic Manufacturing ETF (IYJ)", "298,92$", "-1.20%", border=True)
             
-            c.metric("Defensive Dividend Stock", "226,52$", "-4.25%", border=True)
-            d.metric("Tech Stock", "225,35$", "-18.00%", border=True)
+            c.metric("Defensive Dividend Stock (PG)", "226,52$", "-4.25%", border=True)
+            d.metric("Tech Stock (APPLE)", "225,35$", "-18.00%", border=True)
             
-            e.metric("European Equity ETF", "151,18$", "+16.87%", border=True)
+            e.metric("European Equity ETF (VGK)", "151,18$", "+16.87%", border=True)
 
             st.markdown("\n\n")
             st.markdown(f"**Please notice**: :small[{tx.advisor}]")

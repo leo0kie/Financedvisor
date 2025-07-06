@@ -14,7 +14,7 @@ introduction_one = """You're Taylor, a 23-year-old student at the University of 
 introduction_two = """The stocks you hold — for established tech companies in the US — have dipped already. You're hearing more about **supply chain disruptions**, **trade retaliation**, and **investor uncertainty**. You want to be proactive, but you also don’t want to overreact.
                 You are still a newcomer in the domain of stocks, so you consult _Financedvisor_, your AI financial assistant. It syncs with your brokerage account, tracks economic shifts, and offers personalized advice for your strategy:"""
 
-advisor = """The portfolio is inspired by market developments from beginning of the year 2025 until end of April but does not hold valid, real-time data. The assets in the portfolio also do not represent shares of real-life companies nor fonds.
+advisor = """The portfolio is inspired by market developments from beginning of the year 2025 until end of April but does not hold valid, real-time data.
 The percentage value (in red or green) shows the value development of the corresponding asset for the aforementioned time frame."""
 
 vestra = """_Hi, Taylor. I’ve detected a 3.2% drop in your tech-heavy holdings over the past week. Would you like me to help you reassess your portfolio?_"""

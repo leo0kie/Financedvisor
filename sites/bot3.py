@@ -3,7 +3,6 @@ import time
 import chat
 import base
 import texts as tx
-import os
 
 st.title('Financedvisor 3')
 
@@ -15,6 +14,7 @@ else:
     st.write(f"""Your concerns:   
         :point_right: {tx.scenario_one}  
         :point_right: {tx.scenario_two}  
+        :information_source: {tx.eval_reminder}
         """)
 
 if st.session_state.chat3_disable == False or st.session_state.selected_scenario == False:

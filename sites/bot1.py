@@ -13,7 +13,8 @@ if st.session_state["selected_scenario"] == False:
 else:
     st.write(f"""Your concerns:   
         :point_right: {tx.scenario_one}  
-        :point_right: {tx.scenario_two}   
+        :point_right: {tx.scenario_two}  
+        :information_source: {tx.eval_reminder} 
         """)
 
 if st.session_state.chat1_disable == False or st.session_state.selected_scenario == False:
