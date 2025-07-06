@@ -35,7 +35,7 @@ elif st.session_state.chat1_disable == True and st.session_state.selected_scenar
         label_visibility="collapsed"
     )
 
-chat_bot1 = chat.Chat(st.secrets["OPENAI_API_KEY"], st.secrets["BASE_URL"], st.secrets["MODEL_NAME"], st.session_state.chatbot1_messages, "no_hedging")
+chat_bot1 = chat.Chat(st.session_state.api_key, "https://chat-ai.academiccloud.de/v1", "meta-llama-3.1-8b-instruct", st.session_state.chatbot1_messages, "no_hedging")
 
 #def check_page_change():
 #    chat_bot1.check_page_change(app.bot1_page.url_path)

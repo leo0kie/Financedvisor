@@ -37,8 +37,8 @@ def handle_submissions_old(chatbot: str, radio: str, slider1: int, slider2: int,
 # Initialize Supabase client using Streamlit Secrets for security
 @st.cache_resource
 def intitializeClient():
-    SUPABASE_URL = st.secrets["SUPABASE_URL"]
-    SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
+    SUPABASE_URL = os.environ.get("SUPABASE_URL")#st.secrets["SUPABASE_URL"]
+    SUPABASE_KEY = os.environ.get("SUPABASE_KEY")#st.secrets["SUPABASE_KEY"]
     supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
     return supabase

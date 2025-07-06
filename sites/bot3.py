@@ -3,6 +3,7 @@ import time
 import chat
 import base
 import texts as tx
+import os
 
 st.title('Financedvisor 3')
 
@@ -35,7 +36,7 @@ elif st.session_state.chat3_disable == True and st.session_state.selected_scenar
         label_visibility="collapsed"
     )
 
-chat_bot3 = chat.Chat(st.secrets["OPENAI_API_KEY"], st.secrets["BASE_URL"], st.secrets["MODEL_NAME"], st.session_state.chatbot3_messages, "third_person_hedging")
+chat_bot3 = chat.Chat(st.session_state.api_key, "https://chat-ai.academiccloud.de/v1", "meta-llama-3.1-8b-instruct", st.session_state.chatbot3_messages, "third_person_hedging")
 
 #def check_page_change():
 #    chat_bot3.check_page_change(app.bot3_page.url_path)

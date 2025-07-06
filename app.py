@@ -1,6 +1,7 @@
 import streamlit as st
 import base
 import time
+import os
 
 # Initialize and save all session state variables
 if "start_time" not in st.session_state:
@@ -13,6 +14,9 @@ if "lowest_chatbot" not in st.session_state:
 
 if "activated_chatbot" not in st.session_state:
     st.session_state.activated_chatbot = None
+
+if "api_key" not in st.session_state:
+    st.session_state.api_key = os.environ.get("OPENAI_API_KEY")
 
 if "scenario_visible" not in st.session_state:
     st.session_state["scenario_visible"] = False
