@@ -44,7 +44,7 @@ def intitializeClient():
     return supabase
 
 # Updates the usage counts of the chatbots and selects lowest
-@st.cache_data
+#@st.cache_data
 def get_lowest_usage_chatbot():
     client = intitializeClient()
     response = client.table("chatbot_usage").select("chatbot_name, usage_count").execute()
