@@ -53,7 +53,6 @@ def eval_button_clicked():
         st.session_state.eval_duration = round(time.time() - st.session_state.start_time)
 
 if tab == "Chatting":
-    st.session_state.current_tab = "Chatting"
     for message in st.session_state.chatbot2_messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
