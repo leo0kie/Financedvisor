@@ -1,5 +1,4 @@
 import streamlit as st
-import base
 import time
 import os
 
@@ -9,14 +8,17 @@ if "start_time" not in st.session_state:
     st.session_state.chat_duration = None
     st.session_state.eval_duration = None
 
+if "consent" not in st.session_state:
+    st.session_state.consent = False
+
 if "lowest_chatbot" not in st.session_state:
-    st.session_state.lowest_chatbot = base.get_lowest_usage_chatbot()
+    st.session_state.lowest_chatbot = None
 
 if "activated_chatbot" not in st.session_state:
     st.session_state.activated_chatbot = None
 
 if "api_key" not in st.session_state:
-    st.session_state.api_key = os.environ.get("OPENAI_API_KEY")
+    st.session_state.api_key = os.environ.get("OPENAI_API_KEY")#st.secrets["OPENAI_API_KEY"]
 
 if "scenario_visible" not in st.session_state:
     st.session_state["scenario_visible"] = False
@@ -64,6 +66,7 @@ bot1_page = st.Page("sites/bot1.py", title="Chatbot", icon=":material/android:")
 bot2_page = st.Page('sites/bot2.py', title='Chatbot', icon=":material/android:")
 bot3_page = st.Page('sites/bot3.py', title='Chatbot', icon=":material/android:")
 help_page = st.Page('sites/help.py', title='Contact', icon=":material/shield_question:")
+consent_page = st.Page("sites/consent.py", title="Consent", icon=":material/approval_delegation:")
 
 if st.session_state["lowest_chatbot"] != None:
     if st.session_state["lowest_chatbot"] == "chatbot_1":
@@ -75,12 +78,17 @@ if st.session_state["lowest_chatbot"] != None:
 else:
     st.session_state["activated_chatbot"] = bot1_page
 
-pg = st.navigation(
-    {
-        "Introduction": [about_page],
-        "Testing": [st.session_state.activated_chatbot],
-        "Help": [help_page],
-    }
-)
+if st.session_state.consent == True:
+    pg = st.navigation(
+        {
+            "Introduction": [about_page],
+            "Testing": [st.session_state.activated_chatbot],
+            "Help": [help_page],
+        }
+    )
+else:
+    pg = st.navigation(
+        [consent_page],
+    )
 
 pg.run()
