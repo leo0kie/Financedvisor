@@ -90,4 +90,3 @@ def handle_submissions(chatbot: str, radio: str, slider1: int, slider2: int, sli
 
     client = intitializeClient()
     response = client.table("evaluation_submissions").insert(submission).execute()
-    print(response)

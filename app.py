@@ -1,6 +1,7 @@
 import streamlit as st
 import time
 import os
+import random
 
 # Initialize and save all session state variables
 if "start_time" not in st.session_state:
@@ -76,7 +77,9 @@ if st.session_state["lowest_chatbot"] != None:
     else:
         st.session_state["activated_chatbot"] = bot3_page
 else:
-    st.session_state["activated_chatbot"] = bot1_page
+    ran_pages = [bot1_page, bot2_page, bot3_page]
+    ran_index = random.randint(0, 2)
+    st.session_state["activated_chatbot"] = ran_pages[ran_index]
 
 if st.session_state.consent == True:
     pg = st.navigation(
