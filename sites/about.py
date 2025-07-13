@@ -4,11 +4,6 @@ import time
 
 def select_scenario():
     st.session_state["selected_scenario"] = True
-    #initiate = chat.Chat(st.secrets["OPENAI_API_KEY"], st.secrets["BASE_URL"], st.secrets["MODEL_NAME"])
-    #baseline = initiate.create_baseline_answer()
-    #answer = baseline.choices[0].message.content
-    #st.session_state["baseline"] = answer
-    #print(answer)
     st.session_state.chat1_disable = False
     st.session_state.chat2_disable = False
     st.session_state.chat3_disable = False
@@ -67,7 +62,7 @@ if st.session_state["scenario_visible"] == True:
 
         st.markdown(":small[To clarify those questions, click on the button below to activate the virtual assistant and ask him for advice!]")
 
-        if st.button(label="Start the virtual financial assistant..", key=tx.scenario_two):
+        if st.button(label="Start the virtual financial assistant..", key=tx.scenario_two, disabled=st.session_state.selected_scenario):
             with st.spinner("Loading information...", show_time=True):
                 time.sleep(5)
                 select_scenario()

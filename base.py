@@ -90,7 +90,7 @@ def generate_evaluation(chat: str):
     slider3 = eval_form.slider('Choose your experience/knowledge level by adjusting the slider', 1, 10, key=5, help="1 referring to 'no experience at all', 10 meaning 'long-term experience about markets, stocks and investing'")
     eval_form.write("")
     eval_form.markdown(":five: **What is your gender?**")
-    select = eval_form.selectbox("Select one item", ("Woman", "Man", "Non-binary", "Prefer not to say"), index=None, placeholder="none")
+    select = eval_form.selectbox("Select one item", ("Female", "Male", "Non-binary", "Prefer not to say"), index=None, placeholder="none")
     eval_form.write("")
     eval_form.markdown(":six: **What is your age?**")
     number = eval_form.number_input(label="Enter your age numerically", min_value=0, max_value=99, step=1, value=None, placeholder="NaN")

@@ -15,7 +15,7 @@ This study is conducted as part of a bachelor thesis. Its goal is to study users
 
 st.header("2. Study Participation")
 st.markdown("""
-Your participation in this online study is entirely voluntary and can be discontinued or withdrawn at any time. You can refuse to answer any questions or continue with the study at any time if you feel uncomfortable in any way. You can discontinue or withdraw your participation at any time without giving a reason. However, we reserve the right to exclude you from the study (e.g., with invalid trials or if continuing the study could have a negative impact on your well-being or the equipment). Repeated participation in the study is not permitted.
+Your participation in this online study is entirely voluntary and can be discontinued or withdrawn at any time. You can refuse to answer any questions or continue with the study at any time if you feel uncomfortable in any way. You can discontinue or withdraw your participation at any time without giving a reason. However, we reserve the right to exclude you from the study (e.g. with invalid trials or if continuing the study could have a negative impact on your well-being or the equipment). Repeated participation in the study is not permitted.
 """)
 
 st.header("3. Study Procedure")
