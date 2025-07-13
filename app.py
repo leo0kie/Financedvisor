@@ -77,9 +77,10 @@ if st.session_state["lowest_chatbot"] != None:
     else:
         st.session_state["activated_chatbot"] = bot3_page
 else:
-    ran_pages = [bot1_page, bot2_page, bot3_page]
-    ran_index = random.randint(0, 2)
-    st.session_state["activated_chatbot"] = ran_pages[ran_index]
+    if st.session_state.consent == True:
+        ran_pages = [bot1_page, bot2_page, bot3_page]
+        ran_index = random.randint(0, 2)
+        st.session_state["activated_chatbot"] = ran_pages[ran_index]
 
 if st.session_state.consent == True:
     pg = st.navigation(
