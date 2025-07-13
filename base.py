@@ -74,7 +74,31 @@ def increment_usage(chatbot_name):
     else:
         st.error(f"Error incrementing usage for {chatbot_name}")
 
-def handle_submissions(chatbot: str, radio: str, slider1: int, slider2: int, slider3: int, chat_history: list):
+def generate_evaluation(chat: str):    
+    eval_form = st.form(chat)
+    
+    eval_form.markdown(":one: **Will you, as Taylor, follow the chatbot's given recommendation?**")
+    radio = eval_form.radio('Make a decision', options=["Yes", "No"])
+    eval_form.write("")
+    eval_form.markdown(":two: **To you personally, how confident sounded the chatbot based on the way it responded?**")
+    slider1 = eval_form.slider('Choose your perceived confidence value by adjusting the slider', 1, 10, key=3, help="1 referring to 'very uncertain', 10 meaning 'very confident'")
+    eval_form.write("")
+    eval_form.markdown(""":three: **How strongly do you agree with the statement: "The chatbot's answers seemed correct/valid"?**""")
+    slider2 = eval_form.slider('Choose your level of agreement by adjusting the slider', 1, 10, key=4, help="1 referring to 'completely disagree', 10 meaning 'fully agree'") 
+    eval_form.write("")
+    eval_form.markdown(":four: **Do you personally have experience in the domain of stocks and trading?**")
+    slider3 = eval_form.slider('Choose your experience/knowledge level by adjusting the slider', 1, 10, key=5, help="1 referring to 'no experience at all', 10 meaning 'long-term experience about markets, stocks and investing'")
+    eval_form.write("")
+    eval_form.markdown(":five: **What is your gender?**")
+    select = eval_form.selectbox("Select one item", ("Woman", "Man", "Non-binary", "Prefer not to say"), index=None, placeholder="none")
+    eval_form.write("")
+    eval_form.markdown(":six: **What is your age?**")
+    number = eval_form.number_input(label="Enter your age numerically", min_value=0, max_value=99, step=1, value=None, placeholder="NaN")
+    eval_form.write("")
+    
+    return eval_form, radio, slider1, slider2, slider3, select, number
+
+def handle_submissions(chatbot: str, radio: str, slider1: int, slider2: int, slider3: int, select: str, number: int, chat_history: list):
     user_id = _get_session()
     submission = {
         "user_id": user_id,
@@ -85,6 +109,8 @@ def handle_submissions(chatbot: str, radio: str, slider1: int, slider2: int, sli
         "confidence_value": slider1,
         "correctness_value": slider2,
         "experience_level": slider3,
+        "gender": select,
+        "age": number,
         "chat_history": chat_history
     }
 

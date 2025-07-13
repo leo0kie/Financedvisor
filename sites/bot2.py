@@ -8,6 +8,22 @@ st.title('Financedvisor 2')
 
 st.header('Chat with me!', divider=True)
 
+with st.expander("Your Portfolio", icon="🧾"):
+            a, b = st.columns(2)
+            c, d = st.columns(2)
+            e, f = st.columns(2)
+            st.markdown("_Time stamp_: 2025-04-30")
+            a.metric("U.S. Broad Market ETF (VTI)", "602,80$", "-3.8%", border=True)
+            b.metric("U.S. Domestic Manufacturing ETF (IYJ)", "298,92$", "-1.20%", border=True)
+            
+            c.metric("Defensive Dividend Stock (PG)", "226,52$", "-4.25%", border=True)
+            d.metric("Tech Stock (APPLE)", "225,35$", "-18.00%", border=True)
+            
+            e.metric("European Equity ETF (VGK)", "151,18$", "+16.87%", border=True)
+
+            st.markdown("\n\n")
+            st.markdown(f"**Please notice**: :small[{tx.advisor}]")
+
 if st.session_state["selected_scenario"] == False:
     st.warning(f"{tx.chat_warning}", icon="⚠️")
 else:
@@ -38,9 +54,6 @@ elif st.session_state.chat2_disable == True and st.session_state.selected_scenar
 
 chat_bot2 = chat.Chat(st.session_state.api_key, "https://chat-ai.academiccloud.de/v1", "meta-llama-3.1-8b-instruct", st.session_state.chatbot2_messages, "first_person_hedging")
 
-#def check_page_change():
-#    chat_bot2.check_page_change(app.bot2_page.url_path)
-#check_page_change()
 def end_button_clicked():
     st.session_state.chat2_disable = True
     if st.session_state.chat_duration is None:
@@ -48,7 +61,6 @@ def end_button_clicked():
     st.session_state.current_tab = "Evaluation"
 
 def eval_button_clicked():
-    st.session_state.evaluation_finished = True
     if st.session_state.eval_duration is None:
         st.session_state.eval_duration = round(time.time() - st.session_state.start_time)
 
@@ -79,24 +91,21 @@ if tab == "Chatting":
             st.session_state.evaluation_reminder = True
 
 else:
-    eval_form = st.form("chat2")
-    with eval_form:
-        st.markdown(":one: **Will you, as Taylor, follow the chatbot's given recommendation?**")
-        radio = st.radio('Make a decision', options=["Yes", "No"])
-        st.write("")
-        st.markdown(":two: **To you personally, how confident sounded the chatbot based on the way it responded?**")
-        slider1 = st.slider('Choose your perceived confidence value by adjusting the slider', 1, 10, key=3, help="1 referring to 'very uncertain', 10 meaning 'very confident'")
-        st.write("")
-        st.markdown(""":three: **How strongly do you agree with the statement: "The chatbot's answers can be perceived as correct/valid"?**""")
-        slider2 = st.slider('Choose your level of agreement by adjusting the slider', 1, 10, key=4, help="1 referring to 'completely disagree', 10 meaning 'fully agree'") 
-        st.write("")
-        st.markdown(":four: **Do you personally have experience in the domain of stocks and trading?**")
-        slider3 = st.slider('Choose your experience/knowledge level by adjusting the slider', 1, 10, key=5, help="1 referring to 'no experience at all', 10 meaning 'long-term experience about markets, stocks and investing'")
-        
-        submitted = st.form_submit_button("Submit", on_click=eval_button_clicked, disabled=st.session_state.evaluation_finished)
+    eval, radio, slider1, slider2, slider3, select, number = base.generate_evaluation("chat2")
 
-    if submitted:
-        base.handle_submissions("ChatBot 2", radio, slider1, slider2, slider3, chat_bot2.chat_history)
-        st.success("Evaluation has sucessfully been committed. Thank you for your attendance!", icon="✅")
-        st.balloons()
-        st.info("You can close this window now.", icon="👋")
+    submitted = eval.form_submit_button("Submit", disabled=st.session_state.evaluation_finished)
+
+    if submitted and not st.session_state.evaluation_finished:
+        has_error = False
+
+        if select == None or number == None:
+            st.error("Gender or Age cannot be none.")
+            has_error = True
+        
+        if not has_error:
+            eval_button_clicked()
+            base.handle_submissions("ChatBot 2", radio, slider1, slider2, slider3, select, number, chat_bot2.chat_history)
+            st.session_state.evaluation_finished = True
+            st.success("Evaluation has sucessfully been committed. Thank you for your attendance!", icon="✅")
+            st.balloons()
+            st.info("You can close this window now.", icon="👋")

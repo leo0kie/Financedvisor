@@ -9,7 +9,7 @@ with st.container(border=True):
     a.markdown("""Researcher  
                Leonard Kiefner // _leo_kie@uni-bremen.de_""")
     b.markdown("""Supervisor  
-              Laura Spillner // _lau_spi@uni-bremen.de_""")
+              Laura Spillner // _laura.spillner@uni-bremen.de_""")
 
 
 

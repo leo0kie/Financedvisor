@@ -14,7 +14,7 @@ def select_scenario():
     st.session_state.chat3_disable = False
 
 #FRONTEND
-st.title('Confidence of Chatbots')
+st.title('Chatbot Finance Advisor')
 
 with st.container(border=False):
     st.header('Are you hedging?', divider=True)
