@@ -4,7 +4,7 @@ import base
 st.title("Informed Consent of Study Participation")
 
 st.markdown("""
-You are invited to participate in the online study "Chatbot Finance Advisor". The study is conducted by Leonard Kiefner and supervised by Laura Spillner from the University of Bremen. The study with estimated 50 participants takes place in the period from 2025-07-14 to 2025-07-28. Please note:  
+You are invited to participate in the online study "Chatbot Finance Advisor". The study is conducted by Leonard Kiefner and supervised by Laura Spillner from the University of Bremen. The study with estimated 50 participants takes place in the period from 2025-07-14 to 2025-08-03. Please note:  
 """)
 st.markdown("""<ul><li>Your participation is entirely voluntary and can be discontinued or withdrawn at any time</li><li>One session of the online study will last ca. 9 minutes</li><li>You have no direct benefit from participating in the study, but you support our work and help to advance research in this area</li><li>With the submission of the evaluation at the end of the session, we will log your input</li><li>Input data are treated with confidentiality and will be fully anonymized stored, evaluated and possibly made publicly available as raw data sets so that no conclusions can be drawn about individual persons</li></ul>""", unsafe_allow_html=True)
 st.markdown("The alternative to participation in this study is to choose not to participate. If you have any questions, concerns, or complaints about the informed consent process of this research study or your rights as a human research subject, please contact Laura Spillner. Please read the following information carefully and take the time you need.")
