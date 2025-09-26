@@ -4,8 +4,8 @@ import pandas as pd
 import statsmodels.api as sm
 from statsmodels.formula.api import ols
 import scipy.stats as stats
-from simpletransformers.ner import NERModel
-import argparse
+#from simpletransformers.ner import NERModel
+import re
 np.set_printoptions(legacy='1.25')
 
 def intitializeClient():
@@ -44,7 +44,7 @@ def get_db_metrics_chatbot(botver: str):
                 assistant_messages.append(content)
             chat_messages.append(item["content"])
         chat_length.append(len(chat_messages))
-    
+
     metrics = {
         "total_users": leng,
         "trusted_users": trusted_users,
@@ -58,12 +58,12 @@ def get_db_metrics_chatbot(botver: str):
         "std_correctness_users": np.std(correctness),
         "std_experience_users": np.std(experience)
     }
-    print(metrics["mean_chat_length"])
+    #print(len(metrics["chatbot_history"]))
     return metrics
 
 def preprocess_anova(test: str):
     client = intitializeClient()
-    response = client.table("evaluation_submissions").select("chatbot_used, confidence_value, correctness_value, experience_level, age, duration_until_conversation_end")\
+    response = client.table("evaluation_submissions").select("chatbot_used, confidence_value, correctness_value, experience_level, age, duration_until_conversation_end, gender")\
         .execute()
 
     bot_list = []
@@ -72,6 +72,7 @@ def preprocess_anova(test: str):
     exp_list = []
     age_list = []
     duration_list = []
+    gender_list = []
 
     data_conf = {
         'chatbot_version': bot_list,
@@ -98,6 +99,11 @@ def preprocess_anova(test: str):
         'duration_until_conversation_end': duration_list
     }
 
+    data_gender = {
+        "chatbot_version": bot_list,
+        "gender": gender_list
+    }
+
     for dict in response.data:
         bot_list.append(dict['chatbot_used'])
         conf_list.append(dict['confidence_value'])
@@ -105,7 +111,9 @@ def preprocess_anova(test: str):
         exp_list.append(dict['experience_level'])
         age_list.append(dict['age'])
         duration_list.append(dict['duration_until_conversation_end'])
+        gender_list.append(dict["gender"])
     
+
     if test == 'confidence':
         return data_conf
     elif test == 'correctness':
@@ -116,6 +124,9 @@ def preprocess_anova(test: str):
         return data_age
     elif test == 'time':
         return data_time
+    elif test == "gender":
+        data_gender["gender"] = ["Female" if x == "Woman" else x for x in gender_list]
+        return data_gender
 
 def anova_test(dependent_var: str):
     df = preprocess_anova(dependent_var)
@@ -124,6 +135,9 @@ def anova_test(dependent_var: str):
     anova_table = sm.stats.anova_lm(model, typ=2)
 
     print(anova_table)
+
+def aggregate_hedgeversions(botlist):
+    return ["ChatBot 2" if x == "ChatBot 3" else x for x in botlist]
 
 def preprocess_chi():
     client = intitializeClient()
@@ -142,6 +156,8 @@ def preprocess_chi():
         bot_list.append(dict['chatbot_used'])
         trust_list.append(dict['follows_advice'])
     
+    #df["chatbot_version"] = aggregate_hedgeversions(bot_list)
+
     return df
 
 def chi_squared():
@@ -150,6 +166,10 @@ def chi_squared():
 
     chi2, p, dof, expected = stats.chi2_contingency(contingency)
 
+    n = contingency.to_numpy().sum()  # total sample size
+    cramers_v = np.sqrt(chi2 / (n * (min(contingency.shape)-1)))
+
+    print("Cramér's V:", cramers_v)
     print("Chi2:", chi2)
     print("p-value:", p)
     print("Degrees of freedom:", dof)
@@ -183,35 +203,75 @@ def hedge_multiclassification():
 
 def hedge_classification():
     from huggingface_hub import InferenceClient
+    hedge_probs = []
+    non_hedge_probs = []
+    highest_labels = []
 
     metrics = get_db_metrics_chatbot("ChatBot 1")
     messages = metrics["chatbot_history"]
+    input_strings = split_sentences(messages)
 
     client = InferenceClient(
         provider="hf-inference",
         api_key="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",
     )
 
-    for item in messages:
+    for s in input_strings:
         result = client.text_classification(
-            item,
+            s,
             model="ChrisLiewJY/BERTweet-Hedge",
         )
 
-        print(result)
+        for item in result:
+            if item.label == "LABEL_1":
+                hedge_probs.append(item.score)
+            else:
+                non_hedge_probs.append(item.score)
+        
+        best = max(result, key=lambda x: x.score)
+        best_label = best.label
+        highest_labels.append(best_label)
+    
+    mean_hedge_prob = np.mean(hedge_probs)
+    mean_non_hedge_prob = np.mean(non_hedge_probs)
+    print(f"Mean Probability of hedge occurence: {mean_hedge_prob}\n Mean Probability of no hedge occurence: {mean_non_hedge_prob}")
+    print(f"Hedged Sentences: {highest_labels.count("LABEL_1")}\nNon-hedged Sentences: {highest_labels.count("LABEL_0")}")
+
+def hedge_classification2():
+    from transformers import pipeline
+
+    hedge_probs = []
+    non_hedge_probs = []
+    highest_labels = []
+
+    metrics = get_db_metrics_chatbot("ChatBot 1")
+    messages = metrics["chatbot_history"]
+    input_strings = split_sentences(messages)
+    
+    pipe = pipeline(model="ChrisLiewJY/BERTweet-Hedge")
+    pipe("I am not sure")
+
+def split_sentences(strings):
+    sentences = []
+    for s in strings:
+        cleaned = s.replace("\n", " ")
+        parts = re.split(r'(?<=[.!?])\s+', cleaned.strip())
+        sentences.extend(parts)
+    return sentences
 
 #chi_squared()
-#anova_test('confidence')
-#hedge_classification()
+#anova_test('correctness')
+#hedge_multiclassification()
+hedge_classification2()
 #bot1_metrics = get_db_metrics_chatbot("ChatBot 1")
-bot2_metrics = get_db_metrics_chatbot("ChatBot 2")
-bot3_metrics = get_db_metrics_chatbot("ChatBot 3")
+#bot2_metrics = get_db_metrics_chatbot("ChatBot 2")
+#bot3_metrics = get_db_metrics_chatbot("ChatBot 3")
 
 """ ---VISUALIZATION--- """
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-def visualize_metrics():
+def visualize_metrics(metric: str):
     metrics_list = []
     metrics_list.append(bot1_metrics)
     metrics_list.append(bot2_metrics)
@@ -219,10 +279,21 @@ def visualize_metrics():
 
     total_users_list = []
     trusted_users_list = []
+    mean_chathistory_length = []
+    mean_assistant_messages_length = []
 
     for x in metrics_list:
-        total_users_list.append(x["total_users"])
-        trusted_users_list.append(x["trusted_users"])
+        ch_list = []
+        if metric == "users":
+            total_users_list.append(x["total_users"])
+            trusted_users_list.append(x["trusted_users"])
+        elif metric == "chathistory":
+            mean_chathistory_length.append(x["mean_chat_length"])
+        
+            for chat in x["chatbot_history"]:
+                ch_list.append(sum(1 for ch in chat if ch.isalpha()))
+            mean_assistant_messages_length.append(np.mean(ch_list))
+
 
     total_users = {
         "chatbot_version": [1, 2, 3],
@@ -234,15 +305,39 @@ def visualize_metrics():
         "trusted_users": trusted_users_list
     }
 
-    f, axs = plt.subplots(1, 2, figsize=(8, 4))
-    sns.barplot(data=total_users, x="chatbot_version", y="total_users", ax=axs[0])
-    sns.barplot(data=trusted_users, x="chatbot_version", y="trusted_users", ax=axs[1])
+    chat_length = {
+        "chatbot_version": [1, 2, 3],
+        "mean_chathistory_length": mean_chathistory_length
+    }
+
+    message_length = {
+        "chatbot_version": [1, 2, 3],
+        "mean_chatmessage_length": mean_assistant_messages_length
+    }
+
+    df1 = pd.DataFrame(total_users)
+    df2 = pd.DataFrame(trusted_users)
+
+    df = pd.merge(df1, df2, on="chatbot_version")
+
+    df["not_trusted"] = df["total_users"] - df["trusted_users"]
+
+    df.plot(x="chatbot_version", y=["trusted_users", "not_trusted"], kind="bar", stacked=True)
+    plt.ylabel("Number of users")
+    plt.title("Trusted vs Not Trusted per Chatbot Version")
     plt.show()
+
+    #f, axs = plt.subplots(1, 2, figsize=(8, 4))
+    #sns.barplot(data=chat_length, x="chatbot_version", y="mean_chathistory_length", ax=axs[0])
+    #sns.barplot(data=message_length, x="chatbot_version", y="mean_chatmessage_length", ax=axs[1])
+    #plt.subplots_adjust(wspace=0.5)
+    #plt.show()
 
 def visualize_anova():
-    df = preprocess_anova("age")
-    sns.boxplot(data=df, x="chatbot_version", y="age")
+    df = preprocess_anova("gender")
+    #sns.boxplot(data=df, x="chatbot_version", y="duration_until_conversation_end", showfliers = False)
+    sns.displot(data=df, hue="chatbot_version", x="gender", multiple="stack")
     plt.show()
 
-#visualize_metrics()
+#visualize_metrics("users")
 #visualize_anova()
