@@ -237,19 +237,35 @@ def hedge_classification():
     print(f"Mean Probability of hedge occurence: {mean_hedge_prob}\n Mean Probability of no hedge occurence: {mean_non_hedge_prob}")
     print(f"Hedged Sentences: {highest_labels.count("LABEL_1")}\nNon-hedged Sentences: {highest_labels.count("LABEL_0")}")
 
-def hedge_classification2():
-    from transformers import pipeline
+def hedge_classification2(chatbot: str):
+    import torch
+    from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
-    hedge_probs = []
-    non_hedge_probs = []
-    highest_labels = []
-
-    metrics = get_db_metrics_chatbot("ChatBot 1")
+    metrics = get_db_metrics_chatbot(chatbot)
     messages = metrics["chatbot_history"]
     input_strings = split_sentences(messages)
-    
-    pipe = pipeline(model="ChrisLiewJY/BERTweet-Hedge")
-    pipe("I am not sure")
+
+    tokenizer = AutoTokenizer.from_pretrained("ChrisLiewJY/BERTweet-Hedge")
+    model = AutoModelForSequenceClassification.from_pretrained("ChrisLiewJY/BERTweet-Hedge")
+
+    inputs = tokenizer(input_strings, return_tensors="pt", padding=True)
+
+    with torch.no_grad():
+        logits = model(**inputs).logits
+
+    predicted_class_ids = logits.argmax(dim=-1).tolist()
+    predicted_labels = [model.config.id2label[i] for i in predicted_class_ids]
+
+    df = pd.DataFrame({
+    "text": input_strings,
+    "predicted_label": predicted_labels
+    })
+
+    label_counts = df["predicted_label"].value_counts().reset_index()
+    label_counts.columns = ["label", "count"]
+
+    print(label_counts)
+    #return label_counts
 
 def split_sentences(strings):
     sentences = []
@@ -262,13 +278,15 @@ def split_sentences(strings):
 #chi_squared()
 #anova_test('correctness')
 #hedge_multiclassification()
-hedge_classification2()
+hedge_classification2("ChatBot 3")
 #bot1_metrics = get_db_metrics_chatbot("ChatBot 1")
 #bot2_metrics = get_db_metrics_chatbot("ChatBot 2")
 #bot3_metrics = get_db_metrics_chatbot("ChatBot 3")
 
 """ ---VISUALIZATION--- """
 import seaborn as sns
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 def visualize_metrics(metric: str):
@@ -339,5 +357,30 @@ def visualize_anova():
     sns.displot(data=df, hue="chatbot_version", x="gender", multiple="stack")
     plt.show()
 
+def visualize_hedgeclassification():
+    results = hedge_classification2("ChatBot 3")
+    label_mapping = {
+        "LABEL_0": "No hedge found",
+        "LABEL_1": "Hedge found"
+    }
+
+    results["label"] = results["label"].map(label_mapping)
+
+    # Plot the label counts
+    ax = results.plot(
+        kind="bar", 
+        x="label", 
+        y="count", 
+        title="Label Distribution Chatbot 3", 
+        legend=False
+    )
+
+    plt.xlabel("Label")
+    plt.ylabel("Counted sentences")
+    plt.xticks(rotation=0)
+    plt.tight_layout
+    plt.savefig("label_distribution_chatbot3.png")
+
 #visualize_metrics("users")
 #visualize_anova()
+#visualize_hedgeclassification()
