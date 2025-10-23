@@ -28,7 +28,9 @@ def get_db_metrics_chatbot(botver: str):
     correctness = []
     age = []
     assistant_messages = []
+    messages_length = []
     chat_length = []
+    duration = []
     
     for row in response.data:
         chat_messages = []
@@ -42,23 +44,35 @@ def get_db_metrics_chatbot(botver: str):
             if item["role"] == "assistant":
                 content = item.get("content")
                 assistant_messages.append(content)
+                messages_length.append(len(re.findall(r"[A-Za-z]", content)))
             chat_messages.append(item["content"])
-        chat_length.append(len(chat_messages))
+        chat_length.append(len(chat_messages) / 2)
+        duration.append(row["duration_until_conversation_end"]/60)
+
+    duration = np.array(duration)
+    Q1, Q3 = np.percentile(duration, [25, 75])
+    IQR = Q3 - Q1
+    filtered_data = duration[(duration >= Q1 - 1.5*IQR) & (duration <= Q3 + 1.5*IQR)]
 
     metrics = {
         "total_users": leng,
         "trusted_users": trusted_users,
+        "reliance_ratio": trusted_users / leng * 100,
         "mean_experience_users": np.mean(experience),
-        "mean_confidence_users": np.mean(confidence),
+        "mean_confidence_users": np.median(confidence),
         "mean_correctness_users": np.mean(correctness),
         "mean_age_users": np.mean(age),
         "chatbot_history": assistant_messages,
-        "mean_chat_length": np.mean(chat_length),
+        "mean_chat_length_user": np.mean(chat_length),
+        "mean_chatmessage_length_assistant": np.mean(messages_length),
+        "median_conversation_duration": np.mean(filtered_data) / 60,
         "std_confidence_users": np.std(confidence),
         "std_correctness_users": np.std(correctness),
+        "std_conversation_duration(minutes)": np.std(filtered_data) / 60,
+        "std_chat_length": np.std(chat_length),
         "std_experience_users": np.std(experience)
     }
-    #print(len(metrics["chatbot_history"]))
+    #print(filtered_data, duration)
     return metrics
 
 def preprocess_anova(test: str):
@@ -110,7 +124,7 @@ def preprocess_anova(test: str):
         correct_list.append(dict['correctness_value'])
         exp_list.append(dict['experience_level'])
         age_list.append(dict['age'])
-        duration_list.append(dict['duration_until_conversation_end'])
+        duration_list.append(dict['duration_until_conversation_end']/60)
         gender_list.append(dict["gender"])
     
 
@@ -176,11 +190,11 @@ def chi_squared():
     print("Expected frequencies:\n", expected)
 
 def tukey_hsd():
-    df = preprocess_anova()
+    df = preprocess_anova("correctness")
     from statsmodels.stats.multicomp import pairwise_tukeyhsd
 
     tukey = pairwise_tukeyhsd(
-        endog=df['confidence_value'],
+        endog=df['correctness_value'],
         groups=df['chatbot_version'],
         alpha=0.05
     )
@@ -260,11 +274,15 @@ def hedge_classification2(chatbot: str):
     "text": input_strings,
     "predicted_label": predicted_labels
     })
+    filtered_df = df[df["predicted_label"] == "LABEL_1"]
 
     label_counts = df["predicted_label"].value_counts().reset_index()
     label_counts.columns = ["label", "count"]
 
-    print(label_counts)
+    pd.set_option('display.max_rows', None)
+    pd.set_option('display.max_colwidth', None)
+    pd.set_option('display.width', 0)
+    print(filtered_df)
     #return label_counts
 
 def split_sentences(strings):
@@ -276,12 +294,22 @@ def split_sentences(strings):
     return sentences
 
 #chi_squared()
-#anova_test('correctness')
+#anova_test('time')
+#tukey_hsd()
 #hedge_multiclassification()
-hedge_classification2("ChatBot 3")
+#hedge_classification2("ChatBot 1")
 #bot1_metrics = get_db_metrics_chatbot("ChatBot 1")
 #bot2_metrics = get_db_metrics_chatbot("ChatBot 2")
 #bot3_metrics = get_db_metrics_chatbot("ChatBot 3")
+'''for item in bot1_metrics:
+    if item != "chatbot_history":
+        print(f"{item}: {bot1_metrics.get(item)}")
+for item in bot2_metrics:
+    if item != "chatbot_history":
+        print(f"{item}: {bot2_metrics.get(item)}")
+for item in bot3_metrics:
+    if item != "chatbot_history":
+        print(f"{item}: {bot3_metrics.get(item)}")'''
 
 """ ---VISUALIZATION--- """
 import seaborn as sns
@@ -352,10 +380,11 @@ def visualize_metrics(metric: str):
     #plt.show()
 
 def visualize_anova():
-    df = preprocess_anova("gender")
-    #sns.boxplot(data=df, x="chatbot_version", y="duration_until_conversation_end", showfliers = False)
-    sns.displot(data=df, hue="chatbot_version", x="gender", multiple="stack")
-    plt.show()
+    df = preprocess_anova("time")
+    sns.boxplot(data=df, x="chatbot_version", y="duration_until_conversation_end", showfliers = False)
+    #sns.displot(data=df, hue="chatbot_version", x="gender", multiple="stack")
+    #plt.show()
+    plt.savefig("time.png")
 
 def visualize_hedgeclassification():
     results = hedge_classification2("ChatBot 3")
