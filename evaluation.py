@@ -58,89 +58,114 @@ def get_db_metrics_chatbot(botver: str):
         "total_users": leng,
         "trusted_users": trusted_users,
         "reliance_ratio": trusted_users / leng * 100,
-        "mean_experience_users": np.mean(experience),
-        "mean_confidence_users": np.median(confidence),
+        "mean_confidence_users": np.mean(confidence),
         "mean_correctness_users": np.mean(correctness),
+        "mean_experience_users": np.mean(experience),
         "mean_age_users": np.mean(age),
         "chatbot_history": assistant_messages,
-        "mean_chat_length_user": np.mean(chat_length),
-        "mean_chatmessage_length_assistant": np.mean(messages_length),
-        "median_conversation_duration": np.mean(filtered_data) / 60,
+        "mean_queries_user": np.mean(chat_length),
+        "mean_chatmessage_length_assistant(literals)": np.mean(messages_length),
+        "median_conversation_duration(minutes)": np.median(filtered_data),
         "std_confidence_users": np.std(confidence),
         "std_correctness_users": np.std(correctness),
-        "std_conversation_duration(minutes)": np.std(filtered_data) / 60,
+        "std_experience_users": np.std(experience),
+        "std_conversation_duration": np.std(filtered_data),
         "std_chat_length": np.std(chat_length),
-        "std_experience_users": np.std(experience)
+        "std_assistantmessage_length": np.std(messages_length)
     }
     #print(filtered_data, duration)
-    return metrics
+    #return metrics
+    return messages_length
 
 def preprocess_anova(test: str):
-    client = intitializeClient()
-    response = client.table("evaluation_submissions").select("chatbot_used, confidence_value, correctness_value, experience_level, age, duration_until_conversation_end, gender")\
-        .execute()
+    if test != "message_length":
+        client = intitializeClient()
+        response = client.table("evaluation_submissions").select("chatbot_used, confidence_value, correctness_value, experience_level, age, duration_until_conversation_end, gender")\
+            .execute()
 
-    bot_list = []
-    conf_list = []
-    correct_list = []
-    exp_list = []
-    age_list = []
-    duration_list = []
-    gender_list = []
+        bot_list = []
+        conf_list = []
+        correct_list = []
+        exp_list = []
+        age_list = []
+        duration_list = []
+        gender_list = []
 
-    data_conf = {
-        'chatbot_version': bot_list,
-        'confidence_value': conf_list
-    }
+        data_conf = {
+            'chatbot_version': bot_list,
+            'confidence_value': conf_list
+        }
 
-    data_correct = {
-        'chatbot_version': bot_list,
-        'correctness_value': correct_list
-    }
+        data_correct = {
+            'chatbot_version': bot_list,
+            'correctness_value': correct_list
+        }
 
-    data_experience = {
-        'chatbot_version': bot_list,
-        'experience_level': exp_list
-    }
+        data_experience = {
+            'chatbot_version': bot_list,
+            'experience_level': exp_list
+        }
 
-    data_age = {
-        'chatbot_version': bot_list,
-        'age': age_list
-    }
+        data_age = {
+            'chatbot_version': bot_list,
+            'age': age_list
+        }
 
-    data_time = {
-        'chatbot_version': bot_list,
-        'duration_until_conversation_end': duration_list
-    }
+        data_time = {
+            'chatbot_version': bot_list,
+            'duration_until_conversation_end': duration_list
+        }
 
-    data_gender = {
-        "chatbot_version": bot_list,
-        "gender": gender_list
-    }
+        data_gender = {
+            "chatbot_version": bot_list,
+            "gender": gender_list
+        }
 
-    for dict in response.data:
-        bot_list.append(dict['chatbot_used'])
-        conf_list.append(dict['confidence_value'])
-        correct_list.append(dict['correctness_value'])
-        exp_list.append(dict['experience_level'])
-        age_list.append(dict['age'])
-        duration_list.append(dict['duration_until_conversation_end']/60)
-        gender_list.append(dict["gender"])
-    
+        for dict in response.data:
+            bot_list.append(dict['chatbot_used'])
+            conf_list.append(dict['confidence_value'])
+            correct_list.append(dict['correctness_value'])
+            exp_list.append(dict['experience_level'])
+            age_list.append(dict['age'])
+            duration_list.append(dict['duration_until_conversation_end']/60)
+            gender_list.append(dict["gender"])
 
-    if test == 'confidence':
-        return data_conf
-    elif test == 'correctness':
-        return data_correct
-    elif test == 'experience':
-        return data_experience
-    elif test == 'age':
-        return data_age
-    elif test == 'time':
-        return data_time
-    elif test == "gender":
-        data_gender["gender"] = ["Female" if x == "Woman" else x for x in gender_list]
-        return data_gender
+
+        if test == 'confidence':
+            return data_conf
+        elif test == 'correctness':
+            return data_correct
+        elif test == 'experience':
+            return data_experience
+        elif test == 'age':
+            return data_age
+        elif test == 'time':
+            return data_time
+        elif test == "gender":
+            data_gender["gender"] = ["Female" if x == "Woman" else x for x in gender_list]
+            return data_gender
+    else:
+        bot_list=[]
+        length_list = []
+        metrics=[]
+        metrics1 = get_db_metrics_chatbot("ChatBot 1")
+        metrics2 = get_db_metrics_chatbot("ChatBot 2")
+        metrics3 = get_db_metrics_chatbot("ChatBot 3")
+        metrics.append(metrics1)
+        metrics.append(metrics2)
+        metrics.append(metrics3)
+        x=1
+        for value in metrics:
+            for j in value:
+                bot_list.append(x)
+                length_list.append(j)
+            x+=1
+        print(bot_list, length_list)
+        data_messagelength = {
+            "chatbot_version": bot_list,
+            "gender": length_list
+        }
+        return data_messagelength
 
 def anova_test(dependent_var: str):
     df = preprocess_anova(dependent_var)
@@ -175,19 +200,34 @@ def preprocess_chi():
     return df
 
 def chi_squared():
-    df = preprocess_chi()
-    contingency = pd.crosstab(df['chatbot_version'], df['trust'])
+    #df = preprocess_chi()
+    #contingency = pd.crosstab(df['chatbot_version'], df['trust'])
 
-    chi2, p, dof, expected = stats.chi2_contingency(contingency)
+    contingency2 = pd.DataFrame({
+        "hedge": [23, 174, 237],
+        "no_hedge": [252, 250, 117]
+    }, index=["group_A", "group_B", "group_C"])
 
-    n = contingency.to_numpy().sum()  # total sample size
-    cramers_v = np.sqrt(chi2 / (n * (min(contingency.shape)-1)))
+    pairs = {
+    "G1 vs G2": [[23, 252], [174, 250]],
+    "G1 vs G3": [[23, 252], [237, 117]],
+    "G2 vs G3": [[174, 250], [237, 117]]
+    }
+
+    for name, table in pairs.items():
+        chi2, p, _, _ = stats.chi2_contingency(table)
+        print(f"{name}: p = {p*3}")
+    #chi2, p, dof, expected = stats.chi2_contingency(contingency2)
+
+    #n = contingency.to_numpy().sum()  # total sample size
+    """n = contingency2.values.sum()
+    cramers_v = np.sqrt(chi2 / (n * (min(contingency2.shape)-1)))
 
     print("Cramér's V:", cramers_v)
     print("Chi2:", chi2)
     print("p-value:", p)
     print("Degrees of freedom:", dof)
-    print("Expected frequencies:\n", expected)
+    print("Expected frequencies:\n", expected)"""
 
 def tukey_hsd():
     df = preprocess_anova("correctness")
@@ -294,14 +334,14 @@ def split_sentences(strings):
     return sentences
 
 #chi_squared()
-#anova_test('time')
+anova_test('message_length')
 #tukey_hsd()
 #hedge_multiclassification()
 #hedge_classification2("ChatBot 1")
-#bot1_metrics = get_db_metrics_chatbot("ChatBot 1")
-#bot2_metrics = get_db_metrics_chatbot("ChatBot 2")
-#bot3_metrics = get_db_metrics_chatbot("ChatBot 3")
-'''for item in bot1_metrics:
+"""bot1_metrics = get_db_metrics_chatbot("ChatBot 1")
+bot2_metrics = get_db_metrics_chatbot("ChatBot 2")
+bot3_metrics = get_db_metrics_chatbot("ChatBot 3")
+for item in bot1_metrics:
     if item != "chatbot_history":
         print(f"{item}: {bot1_metrics.get(item)}")
 for item in bot2_metrics:
@@ -309,7 +349,7 @@ for item in bot2_metrics:
         print(f"{item}: {bot2_metrics.get(item)}")
 for item in bot3_metrics:
     if item != "chatbot_history":
-        print(f"{item}: {bot3_metrics.get(item)}")'''
+        print(f"{item}: {bot3_metrics.get(item)}")"""
 
 """ ---VISUALIZATION--- """
 import seaborn as sns
@@ -380,11 +420,12 @@ def visualize_metrics(metric: str):
     #plt.show()
 
 def visualize_anova():
-    df = preprocess_anova("time")
-    sns.boxplot(data=df, x="chatbot_version", y="duration_until_conversation_end", showfliers = False)
+    df = preprocess_anova("confidence")
+    sns.boxplot(data=df, x="chatbot_version", y="confidence_value", showfliers = False)
     #sns.displot(data=df, hue="chatbot_version", x="gender", multiple="stack")
     #plt.show()
-    plt.savefig("time.png")
+    plt.title("Perceived confidence")
+    plt.savefig("confidence2.png")
 
 def visualize_hedgeclassification():
     results = hedge_classification2("ChatBot 3")
